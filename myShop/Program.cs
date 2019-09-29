@@ -23,7 +23,7 @@ namespace myShop
         public Status Status;
         public List<Product> RelatedProducts;
     }
-    //struct WarHouseProduct
+    //struct WarehouseProduct
     //{
     //    public Product Product;
     //    public int Count;
@@ -35,13 +35,21 @@ namespace myShop
     //}
     class Program
     {
-        static string FILE_PATH = "ListOfProducts.txt";
+        const string FILE_PATH = "ListOfProducts.txt";
+        const int ID_COLUMN_WIDTH = 4;
+        const int NAME_COLUMN_WIDTH = 20;
+        const int DETAILS_COLUMN_WIDTH = 35;
+        const int PRICE_COLUMN_WIDTH = 12;
+        const int WAREHOUSE_COLUMN_WIDTH = 8;
+
+
+
         static List<Product> _products;
         static void Main(string[] args)
         {
             init();
-
-            
+            printTitleView("- - - - - С П И С О К   Т О В А Р О В - - - - -", ID_COLUMN_WIDTH + NAME_COLUMN_WIDTH + DETAILS_COLUMN_WIDTH + PRICE_COLUMN_WIDTH + WAREHOUSE_COLUMN_WIDTH + 17);
+            printTableView();
 
 
             Console.ReadLine();
@@ -70,6 +78,42 @@ namespace myShop
                 }
             }
         }
+        static void printTitleView(string title, int width)
+        {
+            Console.WriteLine();
+
+            int spaceCount = (width - title.Length) / 2;
+            string displayTitle = new string(' ', spaceCount) + title;
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine(displayTitle);
+            Console.ResetColor();
+
+            Console.WriteLine();
+        }
+        static void printTableView()
+        {
+            string title = $"| {"Id",ID_COLUMN_WIDTH} | {"Наименование",NAME_COLUMN_WIDTH} | {"Описание",DETAILS_COLUMN_WIDTH} | {"Цена",PRICE_COLUMN_WIDTH} | {"Остаток",WAREHOUSE_COLUMN_WIDTH} |";
+            string lineHeader = $"+{new string('-', ID_COLUMN_WIDTH + 2)}+{new string('-', NAME_COLUMN_WIDTH + 2)}+{new string('-', DETAILS_COLUMN_WIDTH + 2)}+{new string('-', PRICE_COLUMN_WIDTH + 2)}+{new string('-', WAREHOUSE_COLUMN_WIDTH + 2)}+";
+            string lineRow = lineHeader.Replace("+", "|");
+
+            Console.WriteLine(lineHeader);
+            Console.WriteLine(title);
+            Console.WriteLine(lineRow);
+
+        }
+        static void printProductView()
+        {
+
+        }
+        static void printTitleView()
+        {
+
+        }
+        static void printEntryView()
+        {
+
+        }
+
         static List<Product> loadListOfProducts()
         {
             List<Product> products = new List<Product>();
@@ -219,6 +263,14 @@ namespace myShop
                     },
                 }
             });
+        }
+        static string getShortText(string text, int length)
+        {
+            if (text.Length <= length)
+                return text;
+            if (text.Length - length == 1)
+                length--;
+            return text.Remove(length) + "..";
         }
     }
 }
