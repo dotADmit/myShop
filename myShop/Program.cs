@@ -39,23 +39,45 @@ namespace myShop
         static List<Product> _products;
         static void Main(string[] args)
         {
-            _products = new List<Product>();
+            init();
 
-            //Status status = (Status)"normal";
-
-            fillListOfProducts();
-            saveListOfProducts();
-            loadListOfProducts();
             
 
 
             Console.ReadLine();
+        }
+        static void init()
+        {
+            if (!File.Exists(FILE_PATH))
+            {
+                _products = new List<Product>();
+                fillListOfProducts();
+                saveListOfProducts();
+            }
+            else
+            {
+                _products = loadListOfProducts();
+                if (_products == null)
+                {
+                    Console.WriteLine("Данные не загружены");
+                    Console.ReadKey();
+                    return;
+                }
+                if (_products.Count == 0)
+                {
+                    fillListOfProducts();
+                    saveListOfProducts();
+                }
+            }
         }
         static List<Product> loadListOfProducts()
         {
             List<Product> products = new List<Product>();
 
             string listOfProductsText = File.ReadAllText(FILE_PATH);
+
+            if (listOfProductsText == "")
+                return null;
 
             string[] productsWithRelated = listOfProductsText.Split(new string[] { "***\r\n" }, StringSplitOptions.RemoveEmptyEntries);
 
@@ -72,24 +94,33 @@ namespace myShop
                     RelatedProducts = new List<Product>()
                 };
                 string[] relatedProducts = productProperties[5].Split(new string[] { "\t+++" }, StringSplitOptions.RemoveEmptyEntries);
-
+                foreach (string relatedItem in relatedProducts)
+                {
+                    string[] relatedItemProperties = relatedItem.Split(new char[] { '\t', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+                    Product relatedProduct = new Product()
+                    {
+                        Id = Convert.ToInt32(relatedItemProperties[0]),
+                        Name = relatedItemProperties[1],
+                        Description = relatedItemProperties[2],
+                        Price = Convert.ToInt32(relatedItemProperties[3]),
+                        Status = (Status)Convert.ToInt32(relatedItemProperties[4]),
+                    };
+                    product.RelatedProducts.Add(relatedProduct);
+                }
+                products.Add(product);
             }
-
-
             return products;
-
-
         }
         static void saveListOfProducts()
         {
             string textListOfProducts = "";
             foreach (Product product in _products)
             {
-                textListOfProducts += $"{product.Id}|\r\n{product.Name}|\r\n{product.Description}|\r\n{product.Price}|\r\n{product.Status}|\r\n";
+                textListOfProducts += $"{product.Id}|\r\n{product.Name}|\r\n{product.Description}|\r\n{product.Price}|\r\n{(int)product.Status}|\r\n";
                 string textRelatedProducts = "";
                 foreach (Product relatedProduct in product.RelatedProducts)
                 {
-                    textRelatedProducts += $"\t+++\r\n\t{relatedProduct.Id}\r\n\t{relatedProduct.Name}\r\n\t{relatedProduct.Description}\r\n\t{relatedProduct.Price}\r\n\t{relatedProduct.Status}\r\n";
+                    textRelatedProducts += $"\t+++\r\n\t{relatedProduct.Id}\r\n\t{relatedProduct.Name}\r\n\t{relatedProduct.Description}\r\n\t{relatedProduct.Price}\r\n\t{(int)relatedProduct.Status}\r\n";
                 }
                 textListOfProducts += textRelatedProducts + "***\r\n";
             }
