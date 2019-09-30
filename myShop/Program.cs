@@ -23,11 +23,11 @@ namespace myShop
         public Status Status;
         public List<Product> RelatedProducts;
     }
-    //struct WarehouseProduct
-    //{
-    //    public Product Product;
-    //    public int Count;
-    //}
+    struct ProductInWarhouse
+    {
+        public Product Product;
+        public int Count;
+    }
     //struct ProductInBasket
     //{
     //    public Product Product;
@@ -43,13 +43,15 @@ namespace myShop
         const int WAREHOUSE_COLUMN_WIDTH = 8;
 
 
-
+        static List<ProductInWarhouse> _warehouse;
         static List<Product> _products;
         static void Main(string[] args)
         {
             init();
             printTitleView("- - - - - С П И С О К   Т О В А Р О В - - - - -", ID_COLUMN_WIDTH + NAME_COLUMN_WIDTH + DETAILS_COLUMN_WIDTH + PRICE_COLUMN_WIDTH + WAREHOUSE_COLUMN_WIDTH + 17);
             printTableView();
+
+            printRowTextView(77, "sdfsf", "jfjkdifdfd", 9890, 978, ConsoleColor.Red);
 
 
             Console.ReadLine();
@@ -105,13 +107,36 @@ namespace myShop
         {
 
         }
-        static void printTitleView()
-        {
-
-        }
         static void printEntryView()
         {
 
+        }
+        static void printRowTextView(int id, string name, string details, int price, int warehouse, ConsoleColor color)
+        {
+            Console.ResetColor();
+            Console.Write("| ");
+            Console.ForegroundColor = color;
+            Console.Write($"{id,ID_COLUMN_WIDTH}");
+            printDashSetandResetColor(color);
+            Console.Write($"{name,NAME_COLUMN_WIDTH * -1}");
+            printDashSetandResetColor(color);
+            Console.Write($"{details,DETAILS_COLUMN_WIDTH * -1}");
+            printDashSetandResetColor(color);
+            Console.Write($"{price,PRICE_COLUMN_WIDTH - 5} руб.");
+            printDashSetandResetColor(color);
+            Console.Write($"{warehouse,WAREHOUSE_COLUMN_WIDTH - 4} шт.");
+            Console.ResetColor();
+            Console.Write(" |");
+            Console.ForegroundColor = color;
+        }
+
+        static void printHelpView()
+        {
+
+        }
+        static string getCommandView()
+        {
+            return "";
         }
 
         static List<Product> loadListOfProducts()
@@ -264,6 +289,59 @@ namespace myShop
                 }
             });
         }
+        static void fillProductsInWarehouse()
+        {
+            _warehouse.Add(new ProductInWarhouse()
+            {
+                Product = _products[0],
+                Count = 8
+            });
+            _warehouse.Add(new ProductInWarhouse()
+            {
+                Product = _products[0].RelatedProducts[0],
+                Count = 28
+            });
+            _warehouse.Add(new ProductInWarhouse()
+            {
+                Product = _products[0].RelatedProducts[1],
+                Count = 64
+            });
+            _warehouse.Add(new ProductInWarhouse()
+            {
+                Product = _products[0].RelatedProducts[2],
+                Count = 90
+            });
+            _warehouse.Add(new ProductInWarhouse()
+            {
+                Product = _products[1],
+                Count = 19
+            });
+            _warehouse.Add(new ProductInWarhouse()
+            {
+                Product = _products[1].RelatedProducts[0],
+                Count = 4
+            });
+            _warehouse.Add(new ProductInWarhouse()
+            {
+                Product = _products[1].RelatedProducts[1],
+                Count = 37
+            });
+            _warehouse.Add(new ProductInWarhouse()
+            {
+                Product = _products[2],
+                Count = 2
+            });
+            _warehouse.Add(new ProductInWarhouse()
+            {
+                Product = _products[2].RelatedProducts[0],
+                Count = 4
+            });
+            _warehouse.Add(new ProductInWarhouse()
+            {
+                Product = _products[2].RelatedProducts[1],
+                Count = 5
+            });
+        }
         static string getShortText(string text, int length)
         {
             if (text.Length <= length)
@@ -271,6 +349,12 @@ namespace myShop
             if (text.Length - length == 1)
                 length--;
             return text.Remove(length) + "..";
+        }
+        static void printDashSetandResetColor(ConsoleColor color)
+        {
+            Console.ResetColor();
+            Console.Write(" | ");
+            Console.ForegroundColor = color;
         }
     }
 }
